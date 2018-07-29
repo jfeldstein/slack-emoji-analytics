@@ -24,6 +24,7 @@ users.each do |user|
     next
   end
 
+  puts
   puts "Fetching #{user.name}"
 
   history = client.reactions_list(
@@ -65,9 +66,7 @@ users.each do |user|
 
   user_total = user_totals.values.inject(0, :+)
   user_unique = user_totals.keys.length
-  user_favorites << [user.name, user_unique, user_total, user_totals.sort_by{ |_e, c| c }.last(3).reverse].flatten
-
-  puts
+  user_favorites << [user.name, user_unique, user_total, user_totals.sort_by{ |_e, c| c }.last(3).reverse].flatten if user_unique >= 3 && user_total >= 10
 end
 
 #puts "Reaction Totals", reaction_totals.inspect
@@ -86,7 +85,9 @@ user_favorites.sort_by! { |user_fav| user_fav[0] }
 puts
 puts
 
-puts "*User Favorites*", user_favorites.map{|f| f[2].nil? ? nil : "@#{f[0]} reacted #{f[2]} times using #{f[1]} emojis (Favs: :#{f[3]}:x#{f[4]}, :#{f[5]}:x#{f[6]}, :#{f[7]}:x#{f[8]}"}.compact
+puts "*Top Reactors*", user_favorites.sort_by { |f| f[2] }.last(10).reverse.map{ |f| "@#{f[0]} #{f[2]} reactions" }
+puts
+puts "*User Favorites*", user_favorites.map{|f| "@#{f[0]} #{f[1]} unique emojis. Top: :#{f[3]}:x#{f[4]}, :#{f[5]}:x#{f[6]}, :#{f[7]}:x#{f[8]}"}.compact
 puts
 puts "*10 most popular reactions*", popular.last(10).reverse.map{|r| ":#{r[:name]}: (Used x#{r[:total]} by #{r[:people]} people)"}
 puts
