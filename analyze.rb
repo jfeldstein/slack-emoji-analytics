@@ -45,7 +45,7 @@ users.each do |user|
 
     reactions = item.reactions
 
-    puts reactions.map(&:name).join(', ')
+    #puts reactions.map(&:name).join(', ')
 
     reactions.map(&:name).each do |reaction|
       reaction, skin_tone_str = reaction.split('::')
@@ -63,7 +63,9 @@ users.each do |user|
     end
   end
 
-  user_favorites << [user.name, user_totals.sort_by{ |_e, c| c }.last(3).reverse].flatten
+  user_total = user_totals.values.inject(0, :+)
+  user_unique = user_totals.keys.length
+  user_favorites << [user.name, user_unique, user_total, user_totals.sort_by{ |_e, c| c }.last(3).reverse].flatten
 
   puts
 end
@@ -84,7 +86,7 @@ user_favorites.sort_by! { |user_fav| user_fav[0] }
 puts
 puts
 
-puts "*User Favorites*", user_favorites.map{|f| f[2].nil? ? nil : "@#{f[0]}: :#{f[1]}:x#{f[2]}, :#{f[3]}:x#{f[4]}, :#{f[5]}:x#{f[6]}"}.compact
+puts "*User Favorites*", user_favorites.map{|f| f[2].nil? ? nil : "@#{f[0]} reacted #{f[2]} times using #{f[1]} emojis (Favs: :#{f[3]}:x#{f[4]}, :#{f[5]}:x#{f[6]}, :#{f[7]}:x#{f[8]}"}.compact
 puts
 puts "*10 most popular reactions*", popular.last(10).reverse.map{|r| ":#{r[:name]}: (Used x#{r[:total]} by #{r[:people]} people)"}
 puts
